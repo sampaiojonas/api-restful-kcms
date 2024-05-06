@@ -150,5 +150,15 @@ public class ProductController : ControllerBase
 
 // Program.cs e Startup.cs permanecem sem alterações
 
+Para configurar o MongoDB, você pode utilizar o pacote NuGet MongoDB.Driver. E para a configuração do IoC Container, pode-se utilizar o padrão de injeção de dependência do ASP.NET Core.
 
+Para rodar a aplicação, você pode seguir as instruções abaixo:
+
+Clone o repositório.
+Certifique-se de ter o .NET SDK instalado na sua máquina.
+Configure o MongoDB localmente ou utilize um serviço de hospedagem.
+Atualize as configurações de conexão com o banco de dados no arquivo appsettings.json.
+Execute o comando dotnet run na pasta raiz do projeto.
+
+Volto a reforçar o item 5 presente no inicio deste documento.
 

@@ -2,159 +2,50 @@
 
 Olá, com base no desafio solicitado pela KCMS, consegui desenvolver uma API de Gerenciamento de Produtos conforme as diretrizes: https://github.com/kcmsbrasil/challenge-dev-backend, para atender uma grande varejista. Visto isso, os principais recursos utilizados para a criação dessa API foram:
 
-     1. Criar novas categorias, listar as que já estão disponiveis, atualizar as informações de uma categoria existente e exclusão de categorias que não são mais necessárias, onde temos um controle melhor sobre a organização dos produtos.
-     2. Com a API, é possivel criar novos produtos associados a categorias especificas, onde podemos listar os produtos ou até mesmo atualizar as informações já existentes em um produto ou remover-los. 
-     3. Sugestão do uso NoSQL para facilitar e otimizar a pesquisa, consolidação e analise das informações, garantindo um armazenamento eficiente e escalável dos dados, podendo lidar de forma rápida e eficiente. 
-     4. No código abaixo, é possivel visualizar uma arquitetura modular, separando e organizando as camadas de forma clara, objetiva e a responsabilidade entre as camadas da aplicação, tornando o código de fácil entendimento.
-     5. Vale lembrar que não temos um ambiente de testes para integração desta API com o sistema real no momento, a estrutura do código pode permitir facilmente a adição e uma execução posterior de testes para garantir a qualidade e confiabilidade do código. 
+Sobre o Projeto
 
-    ProductManagementAPI
-    ├── Controllers
-    │   ├── CategoryController.cs
-    │   └── ProductController.cs
-    ├── Data
-    │   ├── ICategoryRepository.cs
-    │   ├── IProductRepository.cs
-    │   ├── CategoryRepository.cs
-    │   └── ProductRepository.cs
-    ├── Models
-    │   ├── Category.cs
-    │   └── Product.cs
-    ├── Services
-    │   ├── ICategoryService.cs
-    │   ├── IProductService.cs
-    │   ├── CategoryService.cs
-    │   └── ProductService.cs
-    ├── Program.cs
-    └── Startup.cs
+Esta API oferece uma variedade de recursos para facilitar o gerenciamento de produtos:
+
+Gestão de Categorias:
+Permite criar novas categorias para organizar os produtos.
+Lista as categorias existentes para fácil referência.
+Possibilita atualizar ou remover categorias conforme necessário.
+
+Gestão de Produtos:
+Permite adicionar novos produtos associados a categorias específicas.
+Oferece a capacidade de visualizar, atualizar e remover produtos do sistema.
+
+Armazenamento NoSQL:
+Optamos por utilizar um banco de dados NoSQL para garantir uma experiência de armazenamento eficiente e escalável.
+Isso nos permite lidar facilmente com grandes volumes de dados e otimizar operações de pesquisa e análise.
+
+Arquitetura Modular:
+Implementamos uma arquitetura modular para garantir a organização e a clareza do código.
+Cada camada da aplicação tem suas responsabilidades bem definidas, facilitando a manutenção e a evolução do sistema.
+
+Testes e Qualidade do Código:
+Embora ainda não tenhamos um ambiente de testes integrado, nossa estrutura de código está pronta para suportar testes unitários e de integração no futuro.
+A qualidade e a confiabilidade do código são prioridades para nós, e estamos comprometidos em garantir que nossa API seja robusta e livre de erros.
 
 ____________________________________________________________________________________________________________________________
 
-// Models
-public class Category
-{
-    public string Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-}
+Modelos (Models):
+Aqui definimos como serão estruturadas as informações das categorias e dos produtos. As categorias têm um ID, nome e descrição, enquanto os produtos têm um ID, nome, descrição, preço e o ID da categoria à qual pertencem.
 
-public class Product
-{
-    public string Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public decimal Price { get; set; }
-    public string CategoryId { get; set; }
-}
+Repositórios (Repositories):
+Os repositórios são como "pontes" entre nosso código e o banco de dados. Eles nos permitem buscar, criar, atualizar e excluir informações do banco. Por exemplo, podemos usar o ICategoryRepository para encontrar categorias, adicionar novas ou deletar categorias existentes.
 
-// Repositories
-public interface ICategoryRepository
-{
-    Task<IEnumerable<Category>> GetCategoriesAsync();
-    Task<Category> GetCategoryByIdAsync(string categoryId);
-    Task CreateCategoryAsync(Category category);
-    Task UpdateCategoryAsync(Category category);
-    Task DeleteCategoryAsync(string categoryId);
-}
+Serviços (Services):
+Os serviços são onde fica a "inteligência" do nosso sistema. Eles contêm a lógica de negócios por trás das operações que realizamos com categorias e produtos. Por exemplo, o CategoryService tem métodos para encontrar, adicionar, atualizar e excluir categorias.
 
-public interface IProductRepository
-{
-    Task<IEnumerable<Product>> GetProductsByCategoryIdAsync(string categoryId);
-    Task<Product> GetProductByIdAsync(string productId);
-    Task CreateProductAsync(Product product);
-    Task UpdateProductAsync(Product product);
-    Task DeleteProductAsync(string productId);
-}
-
-public class CategoryRepository : ICategoryRepository
-{
-    // Implementação do repositório de categorias
-}
-
-public class ProductRepository : IProductRepository
-{
-    // Implementação do repositório de produtos
-}
-
-// Services
-public interface ICategoryService
-{
-    Task<IEnumerable<Category>> GetCategoriesAsync();
-    Task<Category> GetCategoryByIdAsync(string categoryId);
-    Task CreateCategoryAsync(Category category);
-    Task UpdateCategoryAsync(Category category);
-    Task DeleteCategoryAsync(string categoryId);
-}
-
-public interface IProductService
-{
-    Task<IEnumerable<Product>> GetProductsByCategoryIdAsync(string categoryId);
-    Task<Product> GetProductByIdAsync(string productId);
-    Task CreateProductAsync(Product product);
-    Task UpdateProductAsync(Product product);
-    Task DeleteProductAsync(string productId);
-}
-
-public class CategoryService : ICategoryService
-{
-    private readonly ICategoryRepository _categoryRepository;
-
-    public CategoryService(ICategoryRepository categoryRepository)
-    {
-        _categoryRepository = categoryRepository;
-    }
-
-    // Implementação dos métodos do serviço de categorias
-}
-
-public class ProductService : IProductService
-{
-    private readonly IProductRepository _productRepository;
-
-    public ProductService(IProductRepository productRepository)
-    {
-        _productRepository = productRepository;
-    }
-
-    // Implementação dos métodos do serviço de produtos
-}
-
-// Controllers
-[ApiController]
-[Route("api/[controller]")]
-public class CategoryController : ControllerBase
-{
-    private readonly ICategoryService _categoryService;
-
-    public CategoryController(ICategoryService categoryService)
-    {
-        _categoryService = categoryService;
-    }
-
-    // Implementação dos métodos do controlador de categorias
-}
-
-[ApiController]
-[Route("api/[controller]")]
-public class ProductController : ControllerBase
-{
-    private readonly IProductService _productService;
-
-    public ProductController(IProductService productService)
-    {
-        _productService = productService;
-    }
-
-    // Implementação dos métodos do controlador de produtos
-}
-
-// Program.cs e Startup.cs permanecem sem alterações
+Controladores (Controllers):
+Os controladores são a "porta de entrada" da nossa API. Eles recebem as requisições HTTP dos usuários e as direcionam para os serviços adequados. Por exemplo, o CategoryController lida com solicitações relacionadas a categorias, como buscar, adicionar, atualizar e excluir categorias.
 
 Para configurar o MongoDB, você pode utilizar o pacote NuGet MongoDB.Driver. E para a configuração do IoC Container, pode-se utilizar o padrão de injeção de dependência do ASP.NET Core.
 
 Para rodar a aplicação, você pode seguir as instruções abaixo:
 
-Clone o repositório.
+Clonar o repositório do GitHub na sua máquina.
 Certifique-se de ter o .NET SDK instalado na sua máquina.
 Configure o MongoDB localmente ou utilize um serviço de hospedagem.
 Atualize as configurações de conexão com o banco de dados no arquivo appsettings.json.

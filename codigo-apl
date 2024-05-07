@@ -1,0 +1,119 @@
+// Models
+public class Category
+{
+    public string Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+}
+
+public class Product
+{
+    public string Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public decimal Price { get; set; }
+    public string CategoryId { get; set; }
+}
+
+// Repositories
+public interface ICategoryRepository
+{
+    Task<IEnumerable<Category>> GetCategoriesAsync();
+    Task<Category> GetCategoryByIdAsync(string categoryId);
+    Task CreateCategoryAsync(Category category);
+    Task UpdateCategoryAsync(Category category);
+    Task DeleteCategoryAsync(string categoryId);
+}
+
+public interface IProductRepository
+{
+    Task<IEnumerable<Product>> GetProductsByCategoryIdAsync(string categoryId);
+    Task<Product> GetProductByIdAsync(string productId);
+    Task CreateProductAsync(Product product);
+    Task UpdateProductAsync(Product product);
+    Task DeleteProductAsync(string productId);
+}
+
+public class CategoryRepository : ICategoryRepository
+{
+    // Implementação do repositório de categorias
+}
+
+public class ProductRepository : IProductRepository
+{
+    // Implementação do repositório de produtos
+}
+
+// Services
+public interface ICategoryService
+{
+    Task<IEnumerable<Category>> GetCategoriesAsync();
+    Task<Category> GetCategoryByIdAsync(string categoryId);
+    Task CreateCategoryAsync(Category category);
+    Task UpdateCategoryAsync(Category category);
+    Task DeleteCategoryAsync(string categoryId);
+}
+
+public interface IProductService
+{
+    Task<IEnumerable<Product>> GetProductsByCategoryIdAsync(string categoryId);
+    Task<Product> GetProductByIdAsync(string productId);
+    Task CreateProductAsync(Product product);
+    Task UpdateProductAsync(Product product);
+    Task DeleteProductAsync(string productId);
+}
+
+public class CategoryService : ICategoryService
+{
+    private readonly ICategoryRepository _categoryRepository;
+
+    public CategoryService(ICategoryRepository categoryRepository)
+    {
+        _categoryRepository = categoryRepository;
+    }
+
+    // Implementação dos métodos do serviço de categorias
+}
+
+public class ProductService : IProductService
+{
+    private readonly IProductRepository _productRepository;
+
+    public ProductService(IProductRepository productRepository)
+    {
+        _productRepository = productRepository;
+    }
+
+    // Implementação dos métodos do serviço de produtos
+}
+
+// Controllers
+[ApiController]
+[Route("api/[controller]")]
+public class CategoryController : ControllerBase
+{
+    private readonly ICategoryService _categoryService;
+
+    public CategoryController(ICategoryService categoryService)
+    {
+        _categoryService = categoryService;
+    }
+
+    // Implementação dos métodos do controlador de categorias
+}
+
+[ApiController]
+[Route("api/[controller]")]
+public class ProductController : ControllerBase
+{
+    private readonly IProductService _productService;
+
+    public ProductController(IProductService productService)
+    {
+        _productService = productService;
+    }
+
+    // Implementação dos métodos do controlador de produtos
+}
+
+// Program.cs e Startup.cs permanecem sem alterações
